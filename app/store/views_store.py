@@ -10,7 +10,11 @@ class Store(webapp2.RequestHandler):
         user_email = users.get_current_user().email()
 
         if UserDetails.is_user_authenticated(user_email):
-            json_input = json.loads(self.request.body)
+            try:
+                json_input = json.loads(self.request.body)
+            except Exception,e:
+                self.response_handler({"message": "No input received or invalid input", "error":str(e)}, 400)
+                return
 
             if "name" and "productId" in json_input:
                 try:
@@ -32,8 +36,8 @@ class Store(webapp2.RequestHandler):
         if UserDetails.is_user_authenticated(user_email):
             try:
                 json_input = json.loads(self.request.body)
-            except:
-                self.response_handler({"message": "No details sent"}, 400)
+            except Exception,e:
+                self.response_handler({"message": "No input received or invalid input", "error":str(e)}, 400)
                 return
 
             try:

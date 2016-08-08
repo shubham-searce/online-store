@@ -12,8 +12,8 @@ class UserHandler(webapp2.RequestHandler):
         if UserDetails.is_user_admin(user_email):
             try:
                 json_input = json.loads(self.request.body)
-            except:
-                self.response_handler({"message": "No details sent"}, 400)
+            except Exception,e:
+                self.response_handler({"message": "No input received or invalid input", "error":str(e)}, 400)
                 return
             if "name" in json_input and "email" in json_input:
                 add_admin = False
@@ -39,8 +39,8 @@ class UserHandler(webapp2.RequestHandler):
         if UserDetails.is_user_admin(user_email):
             try:
                 json_input = json.loads(self.request.body)
-            except:
-                self.response_handler({"message": "No details sent"}, 400)
+            except Exception,e:
+                self.response_handler({"message": "No input received or invalid input", "error":str(e)}, 400)
                 return
             try:
                 user_obj = ndb.Key(urlsafe=kwargs["userId"]).get()
