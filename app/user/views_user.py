@@ -9,6 +9,8 @@ import time
 class UserHandler(webapp2.RequestHandler):
     def post(self):
         user_email = users.get_current_user().email()
+        logging.info("Request raised by : %s",user_email)
+
         if UserDetails.is_user_admin(user_email):
             try:
                 json_input = json.loads(self.request.body)
@@ -36,6 +38,8 @@ class UserHandler(webapp2.RequestHandler):
 
     def put(self,**kwargs):
         user_email = users.get_current_user().email()
+        logging.info("Request raised by : %s",user_email)
+
         if UserDetails.is_user_admin(user_email):
             try:
                 json_input = json.loads(self.request.body)
@@ -59,6 +63,8 @@ class UserHandler(webapp2.RequestHandler):
 
     def delete(self, **kwargs):
         user_email = users.get_current_user().email()
+        logging.info("Request raised by : %s",user_email)
+
         if UserDetails.is_user_authenticated(user_email):
             try:
                 user_key = ndb.Key(urlsafe=kwargs["userId"])
@@ -81,6 +87,7 @@ class FirstUser(webapp2.RequestHandler):
             try:
                 user_obj = users.get_current_user()
                 user_email = user_obj.email()
+                logging.info("Request raised by : %s",user_email)
 
                 json_input = dict(self.request.params) if self.request.params else {}
                 if "name" not in json_input:
@@ -102,16 +109,19 @@ class FirstUser(webapp2.RequestHandler):
 
 class UsersList(webapp2.RequestHandler):
     def get(self):
-        params = dict(self.request.params)
-        try:
-            type = params["type"]
-        except:
-            self.response_handler({ "message": "Type missing for admin/user"},400)
-            return
-        cursor = ndb.Cursor(urlsafe=params["cursor"]) if "cursor" in params else None
-        limit = params["limit"] if "limit" in params else 10
         user_email = users.get_current_user().email()
+        logging.info("Request raised by : %s",user_email)
+
         if UserDetails.is_user_admin(user_email):
+            params = dict(self.request.params)
+            try:
+                type = params["type"]
+            except:
+                self.response_handler({ "message": "Type missing for admin/user"},400)
+                return
+            cursor = ndb.Cursor(urlsafe=params["cursor"]) if "cursor" in params else None
+            limit = params["limit"] if "limit" in params else 10
+
             try:
                 query_results, cursor, more = UserDetails.get_users_for_type(type,cursor,limit)
                 return_list = serialise_users_list(query_results)

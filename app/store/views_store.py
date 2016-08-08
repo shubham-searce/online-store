@@ -8,6 +8,7 @@ from app.store.utils_store import *
 class Store(webapp2.RequestHandler):
     def post(self):
         user_email = users.get_current_user().email()
+        logging.info("Request raised by : %s",user_email)
 
         if UserDetails.is_user_authenticated(user_email):
             try:
@@ -32,6 +33,7 @@ class Store(webapp2.RequestHandler):
 
     def put(self,**kwargs):
         user_email = users.get_current_user().email()
+        logging.info("Request raised by : %s",user_email)
 
         if UserDetails.is_user_authenticated(user_email):
             try:
@@ -59,6 +61,7 @@ class Store(webapp2.RequestHandler):
 
     def delete(self,**kwargs):
         user_email = users.get_current_user().email()
+        logging.info("Request raised by : %s",user_email)
 
         if UserDetails.is_user_authenticated(user_email):
 
@@ -94,6 +97,7 @@ class StoreSearch(webapp2.RequestHandler):
 
     def get(self):
         user_email = users.get_current_user().email()
+        logging.info("Request raised by : %s",user_email)
 
         if UserDetails.is_user_authenticated(user_email):
             json_input = dict(self.request.params)
