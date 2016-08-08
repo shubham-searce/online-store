@@ -1,2 +1,2 @@
 from app.logout.views_logout import *
-url_patterns_welcome = [('/logout', Logout)]
+url_patterns_logout = [('/logout', Logout)]

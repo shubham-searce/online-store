@@ -113,7 +113,7 @@ class StoreSearch(webapp2.RequestHandler):
                 query_string = create_query_string(json_input)
                 sort_options = create_sort_option(sort_dict,self.default_asc_value,self.default_desc_value)
             except Exception, e:
-                self.response_handler({"message": "Something went wrong", "error": "problem while creating sort option" + str(e)}, 500)
+                self.response_handler({"message": "Something went wrong", "error": "problem while creating sort option : " + str(e)}, 500)
                 return
 
             try:
@@ -123,13 +123,13 @@ class StoreSearch(webapp2.RequestHandler):
                 search_results = search.Index(name='Store').search(search_query)
                 cursor = search_results.cursor
             except Exception, e:
-                self.response_handler({"message": "Something went wrong", "error": "problem while searching" + str(e)}, 500)
+                self.response_handler({"message": "Something went wrong", "error": "problem while searching : " + str(e)}, 500)
                 return
 
             try:
                 return_list = serialise_document_objects(search_results)
             except Exception, e:
-                self.response_handler({"message": "Something went wrong", "error": "problem while serialising objects" + str(e)}, 500)
+                self.response_handler({"message": "Something went wrong", "error": "problem while serialising objects : " + str(e)}, 500)
                 return
 
             self.response_handler({"data": return_list, "cursor": cursor.web_safe_string if cursor else ""})

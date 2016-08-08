@@ -17,21 +17,27 @@ class UserHandler(webapp2.RequestHandler):
             except Exception,e:
                 self.response_handler({"message": "No input received or invalid input", "error":str(e)}, 400)
                 return
+
             if "name" in json_input and "email" in json_input:
                 add_admin = False
+
                 if "admin" in json_input and json_input["admin"]:
                     add_admin = True
+
                 try:
                     returned_key = add_user(json_input,add_admin)
                 except Exception, e:
                     self.response_handler({"message": "Something went wrong", "error": str(e)}, 500)
                     return
+
                 if add_admin:
                     self.response_handler({"message": "Admin User Added Successfully!", "id": returned_key.urlsafe()})
                 else:
                     self.response_handler({"message": "User Added Successfully!", "id": returned_key.urlsafe()})
+
             else:
                 self.response_handler({"message": "Name and/or email missing"}, 400)
+
         else:
             self.response_handler({"message": "User is not admin"}, 401)
         return
@@ -46,17 +52,21 @@ class UserHandler(webapp2.RequestHandler):
             except Exception,e:
                 self.response_handler({"message": "No input received or invalid input", "error":str(e)}, 400)
                 return
+
             try:
                 user_obj = ndb.Key(urlsafe=kwargs["userId"]).get()
             except:
                 self.response_handler({"message": "Invalid user id"}, 400)
                 return
+
             try:
                 update_user(json_input,user_obj)
             except Exception, e:
                 self.response_handler({"message": "Something went wrong", "error": str(e)}, 500)
                 return
+
             self.response_handler({"message": "User Updated Successfully!"})
+
         else:
             self.response_handler({"message": "User is not admin"},401)
         return
@@ -71,8 +81,11 @@ class UserHandler(webapp2.RequestHandler):
             except:
                 self.response_handler({"message": "Invalid user id"}, 400)
                 return
+
             user_key.delete()
+
             self.response_handler({"message": "User Deleted Successfully!"})
+
         else:
             self.response_handler({"message": "User is not admin"}, 401)
         return
@@ -93,8 +106,10 @@ class FirstUser(webapp2.RequestHandler):
                 if "name" not in json_input:
                     json_input["name"] = user_obj.nickname()
                 json_input["email"] = user_email
+
                 add_user(json_input,True)
                 time.sleep(0.1)
+
             except Exception, e:
                 self.response_handler({ "message": "Something went wrong", "error":str(e)}, 500)
                 return
@@ -130,6 +145,7 @@ class UsersList(webapp2.RequestHandler):
             except Exception, e:
                 self.response_handler({"message": "Something went wrong", "error": str(e)}, 500)
                 return
+
             self.response_handler({"usersList": return_list,"cursor":cursor,"more":more})
         else:
             self.response_handler({"message": "You are not authorised"}, 401)
