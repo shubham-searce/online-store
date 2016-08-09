@@ -9,7 +9,7 @@ def add_product_entry(entry_json,user_email):
     new_product_entry = Product()
     new_product_entry.name = entry_json["name"]
     new_product_entry.description = entry_json["description"] if "description" in entry_json else ""
-    new_product_entry.category = entry_json["category"] if "category" in entry_json else ""
+    new_product_entry.category = entry_json["category"] if "category" in entry_json else "Unknown"
     new_product_entry.productId = entry_json["productId"]
     new_product_entry.manufacturer = entry_json["manufacturer"] if "manufacturer" in entry_json else "Unknown"
     new_product_entry.addedBy = user_email
