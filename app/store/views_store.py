@@ -104,7 +104,11 @@ class StoreSearch(webapp2.RequestHandler):
 
             sort_dict = json_input.get("sort", {})
             if "cursor" in json_input and json_input["cursor"] != "":
-                cursor = search.Cursor(web_safe_string=json_input["cursor"])
+                try:
+                    cursor = search.Cursor(web_safe_string=json_input["cursor"])
+                except:
+                    self.response_handler({"message": "Invalid cursor"}, 400)
+                    return
             else:
                 cursor = search.Cursor()
             limit = int(json_input["limit"]) if "limit" in json_input else 10

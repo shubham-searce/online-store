@@ -134,19 +134,26 @@ class UsersList(webapp2.RequestHandler):
             except:
                 self.response_handler({ "message": "Type missing for admin/user"},400)
                 return
-            cursor = ndb.Cursor(urlsafe=params["cursor"]) if "cursor" in params else None
+
+            try:
+                cursor = ndb.Cursor(urlsafe=params["cursor"]) if "cursor" in params else None
+            except:
+                self.response_handler({ "message": "Invalid Cursor"},400)
+                return
             limit = params["limit"] if "limit" in params else 10
 
             try:
                 query_results, cursor, more = UserDetails.get_users_for_type(type,cursor,limit)
                 return_list = serialise_users_list(query_results)
-                if cursor:
+                if more:
                     cursor = cursor.urlsafe()
+                else:
+                    cursor = ""
             except Exception, e:
                 self.response_handler({"message": "Something went wrong", "error": str(e)}, 500)
                 return
 
-            self.response_handler({"usersList": return_list,"cursor":cursor,"more":more})
+            self.response_handler({"usersList": return_list,"cursor":cursor})
         else:
             self.response_handler({"message": "You are not authorised"}, 401)
         return
